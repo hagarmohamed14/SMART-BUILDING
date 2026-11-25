@@ -1,0 +1,112 @@
+/* ================= Fixed building backdrop + glassmorphism (both themes) =================
+   The photo sits on a fixed layer behind every module; panels are translucent glass on top.
+   Brightness / blur / overlay come from theme variables so Light and Dark adapt automatically. */
+:root {
+  --cyan: #4a9fb0;
+  --card: rgba(255, 253, 249, .68);
+  --bg-blur: 9px; --bg-bright: 1.04; --bg-sat: .72; --bg-sepia: .28; --bg-pos: 50% 38%;
+  --bg-overlay:
+    radial-gradient(1200px 700px at 78% 0%, rgba(201, 138, 46, .10), transparent 60%),
+    linear-gradient(180deg, rgba(244, 239, 231, .74) 0%, rgba(235, 229, 219, .80) 45%, rgba(231, 224, 213, .86) 100%);
+  --glass-blur: 18px; --glass-edge: rgba(255, 255, 255, .55); --glass-hi: rgba(255, 255, 255, .35);
+}
+[data-theme="dark"] {
+  --bg-blur: 10px; --bg-bright: .38; --bg-sat: .55; --bg-sepia: .55;
+  --bg-overlay:
+    radial-gradient(1000px 620px at 76% 4%, rgba(201, 154, 85, .16), transparent 62%),
+    radial-gradient(900px 600px at 10% 100%, rgba(201, 154, 85, .08), transparent 60%),
+    linear-gradient(180deg, rgba(37, 37, 34, .7) 0%, rgba(37, 37, 34, .8) 50%, rgba(33, 33, 30, .9) 100%);
+  --glass-edge: rgba(242, 239, 232, .09); --glass-hi: rgba(242, 239, 232, .05); --track: #4a4740;
+}
+
+.app { background: transparent !important; position: relative; isolation: isolate; }
+.app::before {
+  content: ""; position: fixed; inset: -40px; z-index: -2; pointer-events: none;
+  background: url('./assets/bg-building.jpg') var(--bg-pos) / cover no-repeat;
+  filter: blur(var(--bg-blur)) brightness(var(--bg-bright)) saturate(var(--bg-sat)) sepia(var(--bg-sepia));
+  animation: bgdrift 48s ease-in-out infinite alternate; transition: filter .6s ease;
+}
+.app::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--bg-overlay); transition: background .6s ease; }
+@keyframes bgdrift { from { transform: scale(1.04) translate3d(-10px, 0, 0); } to { transform: scale(1.09) translate3d(12px, -8px, 0); } }
+
+/* glass surfaces */
+.top { background: rgba(250, 247, 242, .58) !important; backdrop-filter: blur(var(--glass-blur)) saturate(1.3); }
+[data-theme="dark"] .top { background: rgba(37, 37, 34, .6) !important; }
+.rail { background: rgba(246, 242, 235, .42) !important; backdrop-filter: blur(var(--glass-blur)) saturate(1.25); }
+[data-theme="dark"] .rail { background: rgba(37, 37, 34, .42) !important; }
+.panel, .cc-bar, .cc-list, .util-card {
+  background: var(--card); backdrop-filter: blur(var(--glass-blur)) saturate(1.3); -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  border: 1px solid var(--glass-edge) !important;
+  box-shadow: var(--sh), inset 0 1px 0 var(--glass-hi);
+}
+[data-theme="dark"] .panel, [data-theme="dark"] .cc-bar, [data-theme="dark"] .cc-list, [data-theme="dark"] .util-card { background: rgba(64, 62, 56, .58) !important; }
+.kpi, .sys-card, .hv-eq, .zone-grid button, .tk-facts div, .usr { backdrop-filter: blur(6px); }
+[data-theme="dark"] .kpi, [data-theme="dark"] .sys-card, [data-theme="dark"] .hv-eq, [data-theme="dark"] .zone-grid button, [data-theme="dark"] .tk-facts div, [data-theme="dark"] .al, [data-theme="dark"] .vav, [data-theme="dark"] .uc { background: rgba(52, 51, 47, .82) !important; border-color: rgba(242, 239, 232, .07) !important; }
+[data-theme="dark"] .p-h h3, [data-theme="dark"] .p-h b { color: var(--ink); }
+.subtabs button { backdrop-filter: blur(10px); }
+
+/* dark: warm the hologram accents (cards on photo / twin, popovers, video wall) */
+[data-theme="dark"] .dcard { background: linear-gradient(160deg, rgba(64, 62, 56, .86), rgba(44, 43, 39, .88)); border-color: rgba(201, 154, 85, .35); color: var(--ink); }
+[data-theme="dark"] .dcard b em, [data-theme="dark"] .dcard > span { color: #bdb4a4; }
+[data-theme="dark"] .hl path, [data-theme="dark"] .flowline { stroke: var(--cyan); }
+[data-theme="dark"] .pkt { fill: #e6f6f9; filter: drop-shadow(0 0 4px var(--cyan)); }
+[data-theme="dark"] .mk-pop { background: rgba(44, 43, 39, .94); border-color: rgba(201, 154, 85, .4); }
+[data-theme="dark"] .cc-main { background: #1f1e1b; }
+[data-theme="dark"] .tk-plan { background: #2b2a26; }
+[data-theme="dark"] .pl-foot { fill: #34332f; stroke: #5a564d; } [data-theme="dark"] .pl-corr { fill: #3b3934; }
+[data-theme="dark"] .pl-room { fill: #3d3b35; stroke: #5d5950; } [data-theme="dark"] .pl-room.vis { fill: #46433c; stroke: #8a7a5e; }
+[data-theme="dark"] .pl-room.cur { fill: #52482f; stroke: var(--amber); animation: none; }
+[data-theme="dark"] .pl-route { stroke: var(--cyan); } [data-theme="dark"] .pl-t { fill: #bdb4a4; }
+[data-theme="dark"] .pl-lift { fill: #46433c; stroke: #6a655b; }
+[data-theme="dark"] .pl-step circle { fill: #2b2a26; }
+
+/* ================= faster, richer motion ================= */
+.col > .panel, .col > section, .cc-bar, .cc-list, .cc-main, .util-card, .subtabs { animation-duration: .38s !important; }
+.col > :nth-child(2) { animation-delay: .04s; } .col > :nth-child(3) { animation-delay: .08s; } .col > :nth-child(4) { animation-delay: .12s; }
+.col > :nth-child(5) { animation-delay: .16s; } .col > :nth-child(6) { animation-delay: .2s; }
+.kpi, .sys-card, .zone-grid button, .hv-eq, .cc-tile { animation-duration: .34s !important; }
+@keyframes floaty { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+.dcard { animation-duration: 4.2s; } .dcards.r .dcard { animation-duration: 4.8s; }
+.dot, i.st, .dc-h i, .hf-i, .hero-chips i, .pill::before, .mk-eq i { animation-duration: 1.6s; }
+.flowline { animation-duration: .7s; }
+.chart .head .hp { animation-duration: 1.2s; }
+
+/* panel header light sweep on entry */
+@keyframes sweep { from { background-position: -120% 0; } to { background-position: 220% 0; } }
+.panel > .p-h { background: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--amber) 16%, transparent) 50%, transparent 70%) no-repeat; background-size: 60% 100%; animation: sweep 1.1s .15s ease-out both; border-radius: var(--r) var(--r) 0 0; }
+
+/* value flash when a live number changes */
+@keyframes flashUp { 0% { color: var(--green); text-shadow: 0 0 10px color-mix(in srgb, var(--green) 55%, transparent); } 100% { color: inherit; text-shadow: none; } }
+@keyframes flashDn { 0% { color: var(--red); text-shadow: 0 0 10px color-mix(in srgb, var(--red) 55%, transparent); } 100% { color: inherit; text-shadow: none; } }
+.anum.f-up { animation: flashUp .9s ease-out; } .anum.f-dn { animation: flashDn .9s ease-out; }
+
+/* tactile hover / press */
+.kpi.click, .sys-card, .hv-eq, .zone-grid button, .tk-list > button, .cc-items button, .subtabs button, .rail button { transition: transform .16s ease, box-shadow .2s, border-color .2s; }
+.sys-card:hover, .hv-eq:hover, .zone-grid button:hover { transform: translateY(-3px); box-shadow: 0 14px 28px -16px rgba(0, 0, 0, .45), 0 0 0 1px color-mix(in srgb, var(--amber) 35%, transparent); }
+.tk-list > button:hover, .cc-items button:hover { transform: translateX(3px); }
+button:active:not(:disabled) { transform: scale(.97); }
+.rail button.on { box-shadow: 0 0 0 1px color-mix(in srgb, var(--amber) 40%, transparent), 0 6px 18px -8px color-mix(in srgb, var(--amber) 60%, transparent); }
+
+/* ambient: gentle breathing glow on the active panel edges and the live clock */
+@keyframes edge { 50% { box-shadow: var(--sh), inset 0 1px 0 var(--glass-hi), 0 0 0 1px color-mix(in srgb, var(--amber) 22%, transparent); } }
+.panel.grow { animation: rise .38s cubic-bezier(.2, .7, .2, 1) both, edge 5s 1s ease-in-out infinite; }
+[data-mode="sim"] .clock b, [data-mode="sim"] .clock strong { animation: blink 2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) { .app::before { animation: none; } }
+
+/* lazy 3D twin placeholder */
+.twin-loading { height: 100%; min-height: 200px; display: grid; place-content: center; justify-items: center; gap: 10px; color: var(--mute); font-size: 12px; }
+.twin-loading i { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid var(--line); border-top-color: var(--amber); animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.se-mark img { height: 28px; width: auto; display: block; margin-top: 2px; }
+
+/* ===== speed pass 2: snappier everywhere ===== */
+.col > .panel, .col > section, .cc-bar, .cc-list, .cc-main, .util-card, .subtabs, .panel.grow { animation-duration: .28s !important; }
+.col > :nth-child(n) { animation-delay: 0s; } .col > :nth-child(2) { animation-delay: .03s; } .col > :nth-child(3) { animation-delay: .06s; } .col > :nth-child(n+4) { animation-delay: .09s; }
+.kpi, .sys-card, .zone-grid button, .hv-eq, .cc-tile, .tk-hist li { animation-duration: .24s !important; }
+.panel > .p-h { animation-duration: .7s; animation-delay: .05s; }
+.dcard { animation-duration: 3.2s; } .dcards.r .dcard { animation-duration: 3.6s; }
+.dot, i.st, .pill::before, .tk-dot.inside, .tk-st i { animation-duration: 1.2s; }
+.flowline, .pl-route { animation-duration: .5s; }
+.anum.f-up, .anum.f-dn { animation-duration: .6s; }
+.se-mark { justify-content: center; } .se-mark img { height: 32px; margin-top: 0; }

@@ -1,0 +1,65 @@
+/* ================= Motion layer =================
+   Entry choreography, floating cards, glowing status, flowing connection lines, live chart heads.
+   Data tweening itself lives in components/Anim.jsx. */
+.anum, .kpi b, .dcard b, .sc-v, .g-v b, .d-c b, .uc-v strong, .zone-grid strong { font-variant-numeric: tabular-nums; }
+
+/* panels rise in, staggered, whenever a module mounts */
+@keyframes rise { from { opacity: 0; transform: translateY(10px) scale(.995); } to { opacity: 1; transform: none; } }
+.col > .panel, .col > section, .cc-bar, .cc-list, .cc-main, .util-card, .subtabs { animation: rise .55s cubic-bezier(.2, .7, .2, 1) both; }
+.col > :nth-child(2) { animation-delay: .07s; } .col > :nth-child(3) { animation-delay: .14s; } .col > :nth-child(4) { animation-delay: .21s; }
+.col > :nth-child(5) { animation-delay: .28s; } .col > :nth-child(6) { animation-delay: .35s; }
+.col.center > * { animation-delay: .1s; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: none; } }
+.kpi, .sys-card, .zone-grid button, .hv-eq, .cc-tile { animation: pop .5s cubic-bezier(.2, .7, .2, 1) both; }
+.kpis > :nth-child(2), .sys-grid > :nth-child(2) { animation-delay: .05s; } .kpis > :nth-child(3), .sys-grid > :nth-child(3) { animation-delay: .1s; }
+.kpis > :nth-child(4), .sys-grid > :nth-child(4) { animation-delay: .15s; } .kpis > :nth-child(5), .sys-grid > :nth-child(5) { animation-delay: .2s; }
+.kpis > :nth-child(6), .sys-grid > :nth-child(6) { animation-delay: .25s; }
+.cc-tile:nth-child(3n+2) { animation-delay: .06s; } .cc-tile:nth-child(3n) { animation-delay: .12s; }
+.kpi, .sys-card { transition: transform .2s, box-shadow .2s, border-color .2s; }
+.kpi.click:hover, .sys-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .35); }
+.mk-pop, .site-pop, .cfg-pop, .ptz-pad, .cc-side { animation: pop .28s cubic-bezier(.2, .7, .2, 1) both; }
+
+/* floating data cards (photo hero + 3D twin) */
+@keyframes floaty { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+.dcard { animation: floaty 6s ease-in-out infinite; transition: border-color .2s, box-shadow .2s; }
+.dcard:nth-child(2) { animation-delay: -2s; } .dcard:nth-child(3) { animation-delay: -4s; }
+.dcards.r .dcard { animation-duration: 7s; }
+.dcard:hover { box-shadow: 0 0 0 1px rgba(124, 200, 255, .5), 0 0 22px rgba(95, 212, 255, .25); }
+
+/* glowing indicators */
+@keyframes glow { 0%, 100% { box-shadow: 0 0 0 0 var(--g, rgba(95, 212, 110, .55)); } 50% { box-shadow: 0 0 0 4px transparent, 0 0 9px 1px var(--g, rgba(95, 212, 110, .55)); } }
+.dot, i.st, .dc-h i, .hf-i, .hero-chips i, .pill::before, .mk-eq i { animation: glow 2.4s ease-in-out infinite; }
+i.st.offline { --g: rgba(226, 91, 69, .6); animation-duration: 1.2s; } i.st.maint { --g: rgba(143, 139, 208, .55); }
+.pill::before { --g: color-mix(in srgb, var(--c) 60%, transparent); }
+.sys-card.alarm .dot, .dcard.alarm .dc-h i { --g: rgba(255, 107, 87, .75); animation-duration: 1s; }
+@keyframes alarmglow { 0%, 100% { box-shadow: 0 0 0 0 rgba(226, 91, 69, 0); } 50% { box-shadow: 0 0 0 2px rgba(226, 91, 69, .25), 0 0 16px rgba(226, 91, 69, .3); } }
+.sys-card.alarm, .al.critical, .dcard.alarm { animation: alarmglow 1.6s ease-in-out infinite; }
+.dcard.alarm { animation: alarmglow 1.6s ease-in-out infinite, floaty 6s ease-in-out infinite; }
+.rail em { animation: glow 2.4s ease-in-out infinite; --g: rgba(201, 138, 46, .6); }
+.rail em.crit { --g: rgba(226, 91, 69, .8); animation-duration: 1s; }
+.src { transition: background .3s; }
+@keyframes simtag { 50% { box-shadow: 0 0 10px rgba(143, 139, 208, .6); } }
+[data-mode="sim"] .src { animation: simtag 1.6s ease-in-out infinite; }
+
+/* moving connection lines with travelling data packets */
+@keyframes dashflow { to { stroke-dashoffset: -22; } }
+.flowline { stroke-dasharray: 6 5; animation: dashflow .7s linear infinite; }
+.hl.alarm .flowline { animation-duration: .5s; }
+.pkt { fill: #e9f7ff; filter: drop-shadow(0 0 4px #5fd4ff); }
+.hl.warn .pkt { fill: #ffe2b8; filter: drop-shadow(0 0 4px #ffb347); } .hl.alarm .pkt { fill: #ffd2c9; filter: drop-shadow(0 0 5px #ff6b57); }
+@keyframes dlpulse { 50% { r: 5.5; opacity: .7; } }
+.dl-dot { animation: dlpulse 1.8s ease-in-out infinite; filter: drop-shadow(0 0 4px #5fd4ff); }
+
+/* charts: live head on every line, glowing gauge arc, growing meters */
+@keyframes headpulse { from { r: 2.6; opacity: .7; } to { r: 9; opacity: 0; } }
+.chart .head .hp { fill: none; stroke: currentColor; stroke-width: 1.5; animation: headpulse 1.8s ease-out infinite; }
+.sp-head { filter: drop-shadow(0 0 3px currentColor); }
+.g-arc { filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 40%, transparent)); }
+@keyframes mgrow { from { width: 0; } }
+.meter i, .vav-bar i, .bar-fill { animation: mgrow 1s cubic-bezier(.2, .7, .2, 1) both; transition: width .7s cubic-bezier(.2, .7, .2, 1), background .3s; }
+.chart rect { transition: fill .2s, opacity .2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .pkt { display: none; }
+}
